@@ -1,9 +1,10 @@
 import { toast } from "sonner"
 import { useState } from "react"
-import { LoaderPinwheel, WindIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { LoaderPinwheel, WandSparklesIcon } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -18,16 +19,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { Textarea } from "@/components/ui/textarea"
 import {
+  WorkExperience,
   generateWorkExperienceInput,
   generateWorkExperienceSchema,
 } from "@/lib/validation"
-import { Button } from "@/components/ui/button"
 import { generateWorkExperience } from "./actions"
-import { Textarea } from "@/components/ui/textarea"
 
 interface GenerateWorkExperienceButtonProps {
-  onWorkExperienceGenerated: (workExperience: string) => void
+  onWorkExperienceGenerated: (workExperience: WorkExperience) => void
 }
 
 const GenerateWorkExperienceButton = ({
@@ -42,7 +43,7 @@ const GenerateWorkExperienceButton = ({
         type="button"
         onClick={() => setShowInputDialog(true)}
       >
-        <WindIcon className="size-4" /> Smart fill with AI
+        <WandSparklesIcon className="size-4" /> Smart fill with AI
       </Button>
       <InputDialog
         open={showInputDialog}
@@ -58,7 +59,7 @@ export default GenerateWorkExperienceButton
 interface InputDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onWorkExperienceGenerated: (workExperience: string) => void
+  onWorkExperienceGenerated: (workExperience: WorkExperience) => void
 }
 
 const InputDialog = ({
@@ -74,9 +75,7 @@ const InputDialog = ({
   const onSubmit = async (input: generateWorkExperienceInput) => {
     try {
       const response = await generateWorkExperience(input)
-      onWorkExperienceGenerated(
-        `${response.position} at ${response.company} (${response.startDate} - ${response.endDate ?? "Present"})\n${response.description}`,
-      )
+      onWorkExperienceGenerated(response!)
       onOpenChange(false)
     } catch (error: unknown) {
       if (error instanceof Error) {

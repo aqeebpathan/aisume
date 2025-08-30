@@ -30,17 +30,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  WorkExperience,
+  workExperienceSchema,
+  WorkExperienceValues,
+} from "@/lib/validation"
 import { cn } from "@/lib/utils"
 import { EditorFormProps } from "@/lib/types"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import GenerateWorkExperienceButton from "./GenerateWorkExperienceButton"
-import {
-  WorkExperience,
-  workExperienceSchema,
-  WorkExperienceValues,
-} from "@/lib/validation"
 
 const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
   const form = useForm<WorkExperienceValues>({

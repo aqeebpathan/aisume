@@ -1,3 +1,4 @@
+import path from "path"
 import type { NextConfig } from "next"
 import type { Configuration, RuleSetRule, RuleSetCondition } from "webpack"
 
@@ -39,6 +40,8 @@ const nextConfig: NextConfig = {
           ],
         } as RuleSetCondition,
         use: ["@svgr/webpack"],
+        // Exclude Next.js metadata SVGs (like app/icon.svg)
+        exclude: [path.resolve(__dirname, "src/app/icon.svg")],
       },
     )
 

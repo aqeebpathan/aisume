@@ -1,28 +1,47 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  webpack(config) {
-    // Grab the existing rule that handles SVG imports
-    const fileLoaderRule = config.module.rules.find((rule) =>
-      rule.test?.test?.(".svg"),
+import type { NextConfig } from "next"
+import type { Configuration, RuleSetRule, RuleSetCondition } from "webpack"
+
+function isRuleSetRule(rule: unknown): rule is RuleSetRule {
+  return typeof rule === "object" && rule !== null && "test" in rule
+}
+
+const nextConfig: NextConfig = {
+  webpack(config: Configuration) {
+    // Find the rule that handles SVG imports
+    const fileLoaderRule = config.module?.rules?.find(
+      (rule): rule is RuleSetRule =>
+        isRuleSetRule(rule) &&
+        rule.test instanceof RegExp &&
+        rule.test.test(".svg"),
     )
 
-    config.module.rules.push(
-      // Reapply the existing rule, but only for svg imports ending in ?url
+    if (!fileLoaderRule) {
+      throw new Error("Could not find file loader rule for SVGs")
+    }
+
+    config.module?.rules?.push(
       {
         ...fileLoaderRule,
         test: /\.svg$/i,
         resourceQuery: /url/, // *.svg?url
       },
-      // Convert all other *.svg imports to React components
       {
         test: /\.svg$/i,
         issuer: fileLoaderRule.issuer,
-        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] },
+        resourceQuery: {
+          not: [
+            ...(Array.isArray(
+              fileLoaderRule.resourceQuery as RuleSetCondition | undefined,
+            )
+              ? (fileLoaderRule.resourceQuery as RuleSetCondition[])
+              : []),
+            /url/,
+          ],
+        } as RuleSetCondition,
         use: ["@svgr/webpack"],
       },
     )
 
-    // Modify the file loader rule to ignore *.svg
     fileLoaderRule.exclude = /\.svg$/i
 
     return config

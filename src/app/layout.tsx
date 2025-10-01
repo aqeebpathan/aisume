@@ -1,9 +1,11 @@
+// app/layout.tsx
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter_Tight } from "next/font/google"
 
 import { ThemeProvider } from "next-themes"
 import { ClerkProvider } from "@clerk/nextjs"
+import TopLoader from "@/components/TopLoader"
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +32,7 @@ export default function RootLayout({
             defaultTheme="light"
             disableTransitionOnChange
           >
+            <TopLoader />
             {children}
           </ThemeProvider>
         </body>

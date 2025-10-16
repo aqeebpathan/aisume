@@ -5,6 +5,7 @@ import Navbar from "./(main)/Navbar"
 import Footer from "./(main)/Footer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import SubscriptionPlans from "@/components/SubscriptionPlans"
 
 export default function Home() {
   return (
@@ -168,6 +169,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            <SubscriptionPlans />
           </div>
         </main>
       </div>

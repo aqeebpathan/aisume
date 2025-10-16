@@ -30,6 +30,9 @@ model Resume {
 
   workExperiences WorkExperience[]
   educations      Education[]
+  projects        Project[]
+  certificates    Certificate[]
+  courses         Course[]
   skills          String[]
 
   createdAt DateTime @default(now())
@@ -48,7 +51,10 @@ model WorkExperience {
   description String?
 
   resumeId String
-  resume   Resume @relation(fields: [resumeId], references: [id])
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("work_experiences")
 }
@@ -63,10 +69,63 @@ model Education {
   endDate   String?
 
   resumeId String
-  resume   Resume @relation(fields: [resumeId], references: [id])
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("educations")
+}
+
+model Project {
+  id String @id @default(cuid())
+
+  name        String?
+  role        String?
+  description String?
+  startDate   String?
+  endDate     String?
+  link        String?
+
+  resumeId String
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model Certificate {
+  id String @id @default(cuid())
+
+  name       String?
+  issuer     String?
+  issueDate  String?
+  expiryDate String?
+
+  resumeId String
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("certificates")
+}
+
+model Course {
+  id String @id @default(cuid())
+
+  name           String?
+  institution    String?
+  completionDate String?
+  description    String?
+
+  resumeId String
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("courses")
 }

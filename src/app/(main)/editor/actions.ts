@@ -1,75 +1,104 @@
 "use server"
 
 import prisma from "@/lib/prisma"
-import { resumeSchema, ResumeValues } from "@/lib/validation"
 import { auth } from "@clerk/nextjs/server"
+import { ResumeValues } from "@/lib/validation"
 
-export const saveResume = async (values: ResumeValues) => {
-  const { id } = values
-
-  const { workExperiences, educations, ...resumeValues } =
-    resumeSchema.parse(values)
-
+export async function saveResume(values: ResumeValues) {
   const { userId } = await auth()
+
   if (!userId) {
-    throw new Error("User not authenticated")
+    throw new Error("Unauthorized")
   }
 
+  const {
+    id,
+    workExperiences,
+    educations,
+    projects,
+    certificates,
+    courses,
+    ...resumeValues
+  } = values
+
   if (id) {
-    const existingResume = await prisma.resume.findUnique({
-      where: { id, userId },
-    })
-
-    if (!existingResume) {
-      throw new Error("Resume not found")
-    }
-
+    // Update existing resume
     return await prisma.resume.update({
-      where: { id },
+      where: { id, userId },
       data: {
         ...resumeValues,
         workExperiences: {
-          deleteMany: {}, // Delete existing experiences
-          create: workExperiences?.map((exp) => ({
-            ...exp,
-            startDate: exp?.startDate
-              ? new Date(exp.startDate).toISOString()
-              : null,
-            endDate: exp?.endDate ? new Date(exp.endDate).toISOString() : null,
-          })),
+          deleteMany: {},
+          create:
+            workExperiences?.map((exp) => ({
+              ...exp,
+            })) || [],
         },
         educations: {
           deleteMany: {},
-          create: educations?.map((edu) => ({
-            ...edu,
-            startDate: edu?.startDate
-              ? new Date(edu.startDate).toISOString()
-              : null,
-            endDate: edu?.endDate ? new Date(edu.endDate).toISOString() : null,
-          })),
+          create:
+            educations?.map((edu) => ({
+              ...edu,
+            })) || [],
         },
-        updatedAt: new Date(),
+        projects: {
+          deleteMany: {},
+          create:
+            projects?.map((proj) => ({
+              ...proj,
+            })) || [],
+        },
+        certificates: {
+          deleteMany: {},
+          create:
+            certificates?.map((cert) => ({
+              ...cert,
+            })) || [],
+        },
+        courses: {
+          deleteMany: {},
+          create:
+            courses?.map((course) => ({
+              ...course,
+            })) || [],
+        },
       },
     })
   } else {
-    // Creating a new resume
+    // Create new resume
     return await prisma.resume.create({
       data: {
         ...resumeValues,
         userId,
         workExperiences: {
-          create: workExperiences?.map((exp) => ({
-            ...exp,
-            startDate: exp?.startDate ? new Date(exp.startDate) : undefined,
-            endDate: exp?.endDate ? new Date(exp.endDate) : undefined,
-          })),
+          create:
+            workExperiences?.map((exp) => ({
+              ...exp,
+            })) || [],
         },
         educations: {
-          create: educations?.map((edu) => ({
-            ...edu,
-            startDate: edu?.startDate ? new Date(edu.startDate) : undefined,
-            endDate: edu?.endDate ? new Date(edu.endDate) : undefined,
-          })),
+          create:
+            educations?.map((edu) => ({
+              ...edu,
+            })) || [],
+        },
+        projects: {
+          create:
+            projects?.map((proj) => ({
+              ...proj,
+            })) || [],
+        },
+        certificates: {
+          create:
+            certificates?.map((cert) => ({
+              ...cert,
+            })) || [],
+        },
+        courses: {
+          create:
+            courses?.map((course) => ({
+              ...course,
+            })) || [],
         },
       },
     })

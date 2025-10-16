@@ -6,6 +6,9 @@ import EducationForm from "./forms/EducationForm"
 import GeneralInfoForm from "./forms/GeneralInfoForm"
 import PersonalInfoForm from "./forms/PersonalInfoForm"
 import WorkExperienceForm from "./forms/WorkExperienceForm"
+import ProjectsForm from "./forms/ProjectsForm"
+import CertificatesForm from "./forms/CertificatesForm"
+import CoursesForm from "./forms/CoursesForm"
 
 type Steps = {
   title: string
@@ -21,11 +24,14 @@ export const steps: Steps[] = [
     component: WorkExperienceForm,
     key: "work-experience",
   },
+  { title: "Projects", component: ProjectsForm, key: "projects" },
+  { title: "Education", component: EducationForm, key: "education" },
   {
-    title: "Education",
-    component: EducationForm,
-    key: "education",
+    title: "Certifications",
+    component: CertificatesForm,
+    key: "certifications",
   },
+  { title: "Courses", component: CoursesForm, key: "courses" },
   { title: "Skills", component: SkillsForm, key: "skills" },
   { title: "Summary", component: SummaryForm, key: "summary" },
 ]
